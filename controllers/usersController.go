@@ -4,11 +4,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/maykealisson/buy-and-hold/dtos"
 )
 
 func CreateUser(c *gin.Context) {
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Cria usuario"})
+	var json dtos.UserDto
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(400, err.Error())
+		return
+	}
+
+	err := json.Validate()
+	if err != nil {
+		// responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		c.JSON(http.StatusCreated, gin.H{"error": err})
+		return
+	}
+	c.JSON(http.StatusCreated, json)
 
 }
 
