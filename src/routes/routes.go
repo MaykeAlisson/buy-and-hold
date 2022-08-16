@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/maykealisson/buy-and-hold/controllers"
+	"github.com/maykealisson/buy-and-hold/src/controllers"
 )
 
 func HandlerRequest() {

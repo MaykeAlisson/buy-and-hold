@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/maykealisson/buy-and-hold/routes"
+	"github.com/maykealisson/buy-and-hold/src/routes"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/maykealisson/buy-and-hold/dtos"
+	"github.com/maykealisson/buy-and-hold/src/dtos"
 )
 
 func CreateUser(c *gin.Context) {
