@@ -5,6 +5,6 @@ type Assert struct {
 	Name         string
 	Amount       int32
 	Price        int64
-	AvegerePrice int64
+	AveragePrice int64
 	UserId       uint32
 }

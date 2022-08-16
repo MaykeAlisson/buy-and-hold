@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
+	"github.com/maykealisson/buy-and-hold/src/responses"
 )
 
 func CreateUser(c *gin.Context) {
@@ -17,11 +18,13 @@ func CreateUser(c *gin.Context) {
 
 	err := json.Validate()
 	if err != nil {
-		// responses.ERROR(w, http.StatusUnprocessableEntity, err)
-		c.JSON(http.StatusCreated, gin.H{"error": err})
+		responses.ValidError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, json)
+
+	responses.Response(c, http.StatusCreated, json)
+
+	//c.JSON(http.StatusCreated, json)
 
 }
 

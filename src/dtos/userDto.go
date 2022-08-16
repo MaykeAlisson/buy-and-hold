@@ -14,14 +14,17 @@ type UserDto struct {
 }
 
 func (u *UserDto) Validate() error {
-	if u.Password == "" {
-		return errors.New("Required Password")
+	if u.Name == "" {
+		return errors.New("Required name")
 	}
 	if u.Email == "" {
-		return errors.New("Required Email")
+		return errors.New("Required email")
 	}
 	if err := checkmail.ValidateFormat(u.Email); err != nil {
 		return errors.New("Invalid Email")
+	}
+	if u.Password == "" {
+		return errors.New("Required password")
 	}
 	return nil
 }
