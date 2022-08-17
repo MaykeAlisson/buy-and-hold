@@ -22,8 +22,6 @@ CREATE TABLE public.asserts (
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
 
-CREATE INDEX asserts_identifier_idx ON public.asserts (IDENTIFIER);
-
 CREATE INDEX asserts_name_idx ON public.asserts (name);
 
 ---
@@ -40,8 +38,6 @@ CREATE TABLE public.launchs (
 	CONSTRAINT launchs_pkey PRIMARY KEY (id),
     CONSTRAINT fk_assert_id FOREIGN KEY (assert_id) REFERENCES public.asserts(id)
 );
-
-CREATE INDEX launchs_identifier_idx ON public.launchs (IDENTIFIER);
 
 CREATE INDEX launchs_operation_idx ON public.launchs (operation);
 

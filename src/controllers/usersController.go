@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
+	"github.com/maykealisson/buy-and-hold/src/models"
+	"github.com/maykealisson/buy-and-hold/src/database"
 	"github.com/maykealisson/buy-and-hold/src/responses"
 )
 
@@ -22,7 +24,24 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	responses.Response(c, http.StatusCreated, json)
+	user := models.User{
+		Name: json.Name,
+		Email: json.Email,
+		Password: json.Password,
+	}
+
+	userCreated, err := user.SaveUser(database.DB)
+
+	if err != nil {
+
+		//formattedError := formaterror.FormatError(err.Error())
+
+		//responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		responses.ValidError(c, err)
+		return
+	}
+
+	responses.Response(c, http.StatusCreated, userCreated)
 
 	//c.JSON(http.StatusCreated, json)
 

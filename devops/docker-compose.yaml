@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: "postgres-buy-hold"
+    restart: always
+    tty: true
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: buyhold
+    volumes:
+      - ./.postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - buyhold
+ 
+networks:
+  buyhold:
+    driver: "bridge"
