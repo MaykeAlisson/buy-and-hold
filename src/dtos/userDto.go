@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/badoux/checkmail"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/maykealisson/buy-and-hold/src/models"
 )
 
 type UserDto struct {
@@ -29,10 +29,10 @@ func (u *UserDto) Validate() error {
 	return nil
 }
 
-func Hash(password string) ([]byte, error) {
-	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-}
-
-func VerifyPassword(hashedPassword, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+func (u *UserDto) ToDomain() models.User {
+	return models.User{
+		Name:     u.Name,
+		Email:    u.Email,
+		Password: u.Password,
+	}
 }

@@ -5,43 +5,35 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
-	"github.com/maykealisson/buy-and-hold/src/models"
-	"github.com/maykealisson/buy-and-hold/src/database"
 	"github.com/maykealisson/buy-and-hold/src/responses"
+	"github.com/maykealisson/buy-and-hold/src/services"
 )
 
 func CreateUser(c *gin.Context) {
 
-	var json dtos.UserDto
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var dto dtos.UserDto
+	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(400, err.Error())
 		return
 	}
 
-	err := json.Validate()
+	err := dto.Validate()
 	if err != nil {
-		responses.ValidError(c, err)
+		responses.BusinessException(c, err)
 		return
 	}
 
-	user := models.User{
-		Name: json.Name,
-		Email: json.Email,
-		Password: json.Password,
-	}
-
-	userCreated, err := user.SaveUser(database.DB)
-
+	userAcess, err := services.CreateUser(dto)
 	if err != nil {
 
 		//formattedError := formaterror.FormatError(err.Error())
 
 		//responses.ERROR(w, http.StatusInternalServerError, formattedError)
-		responses.ValidError(c, err)
+		responses.BusinessException(c, err)
 		return
 	}
 
-	responses.Response(c, http.StatusCreated, userCreated)
+	responses.Response(c, http.StatusCreated, userAcess)
 
 	//c.JSON(http.StatusCreated, json)
 
