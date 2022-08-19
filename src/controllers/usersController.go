@@ -17,7 +17,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	err := dto.Validate()
+	err := dto.Validate("")
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
@@ -35,21 +35,48 @@ func CreateUser(c *gin.Context) {
 
 	responses.Response(c, http.StatusCreated, userAcess)
 
-	//c.JSON(http.StatusCreated, json)
-
 }
 
 func UpdateUser(c *gin.Context) {
 
 	id := c.Param("id")
 
-	c.JSON(http.StatusOK, gin.H{"message": "update usuario" + id})
+	var dto dtos.UserDto
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		c.JSON(400, err.Error())
+		return
+	}
+
+	err := dto.Validate("update")
+	if err != nil {
+		responses.BusinessException(c, err)
+		return
+	}
+
+	// verifica se id nao e null e confert em int 
+	// verifica se e o mesmo id que esta no token
+	
+	erroUpdate := services.UpdateUser(id, dto)
+	if erroUpdate != nil {
+		responses.BusinessException(c, erroUpdate)
+		return
+	}
+	c.JSON(http.StatusOK, nil)
 
 }
 
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 
-	c.JSON(http.StatusOK, gin.H{"message": "delete usuario" + id})
+	// verifica se id nao e null e confert em int 
+	// verifica se e o mesmo id que esta no token
+
+	err := services.DeleteUser(id)
+	if err != nil {
+		responses.BusinessException(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
 
 }

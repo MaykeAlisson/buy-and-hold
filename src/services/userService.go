@@ -32,7 +32,7 @@ func CreateUser(dto dtos.UserDto) (dtos.AcessDto, error) {
 
 }
 
-func UpdateUser(userId int, dto dtos.UserDto) error {
+func UpdateUser(userId uint32, dto dtos.UserDto) error {
 
 	// verifica se existe usuario com id
 	// altera o nome, email e senha
@@ -41,7 +41,7 @@ func UpdateUser(userId int, dto dtos.UserDto) error {
 
 }
 
-func DeleteUser(userId int) error {
+func DeleteUser(userId uint32) error {
 
 	// verifica se existe usuario com id
 	// deleta todos os registros relacionado ao usuario
