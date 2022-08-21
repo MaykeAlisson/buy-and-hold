@@ -2,6 +2,7 @@ package dtos
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/badoux/checkmail"
 	"github.com/maykealisson/buy-and-hold/src/models"

@@ -1,3 +1,9 @@
 package services
 
-func CreateAssert() {}
+type accertService struct{}
+
+func AssertService() *accertService {
+	return &accertService{}
+}
+
+func (service *accertService) CreateAssert() {}

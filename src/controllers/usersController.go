@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
@@ -23,12 +24,8 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	userAcess, err := services.CreateUser(dto)
+	userAcess, err := services.UserService().CreateUser(dto)
 	if err != nil {
-
-		//formattedError := formaterror.FormatError(err.Error())
-
-		//responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		responses.BusinessException(c, err)
 		return
 	}
@@ -39,7 +36,11 @@ func CreateUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 
-	id := c.Param("id")
+	id, errorFormt := strconv.ParseUint(c.Param("id"), 2, 32)
+	if errorFormt != nil {
+		c.JSON(400, gin.H{"message": "id error format"})
+		return
+	}
 
 	var dto dtos.UserDto
 	if err := c.ShouldBindJSON(&dto); err != nil {
@@ -53,10 +54,10 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// verifica se id nao e null e confert em int 
+	// verifica se id nao e null e confert em int
 	// verifica se e o mesmo id que esta no token
-	
-	erroUpdate := services.UpdateUser(id, dto)
+
+	erroUpdate := services.UserService().UpdateUser(uint32(id), dto)
 	if erroUpdate != nil {
 		responses.BusinessException(c, erroUpdate)
 		return
@@ -66,12 +67,17 @@ func UpdateUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	id := c.Param("id")
 
-	// verifica se id nao e null e confert em int 
+	id, errorFormt := strconv.ParseUint(c.Param("id"), 2, 32)
+	if errorFormt != nil {
+		c.JSON(400, gin.H{"message": "id error format"})
+		return
+	}
+
+	// verifica se id nao e null e confert em int
 	// verifica se e o mesmo id que esta no token
 
-	err := services.DeleteUser(id)
+	err := services.UserService().DeleteUser(uint32(id))
 	if err != nil {
 		responses.BusinessException(c, err)
 		return

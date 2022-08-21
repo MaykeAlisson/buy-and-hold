@@ -1,7 +1,9 @@
 package models
 
 import (
+	"errors"
 	"html"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -52,33 +54,21 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	if err != nil {
 		return &User{}, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &User{}, errors.New("User Not Found")
 	}
 	return u, err
 }
 
-func (u *User) FindUserByEmail(db *gorm.DB, email string) (*User, error) {
+func (u *User) ExistsEmail(db *gorm.DB) (bool, error) {
 	var err error
-	err = db.Debug().Model(User{}).Where("email = ?", email).Take(&u).Error
+	result := map[string]interface{}{}
+	err = db.Debug().Model(User{}).Where("email = ?", u.Email).Take(&result).Error
 	if err != nil {
-		return &User{}, err
-	}
-	if gorm.IsRecordNotFoundError(err) {
-		return &User{}, errors.New("User with email Not Found")
-	}
-	return u, err
-}
-
-func (u *User) ExistsEmail(db *gorm.DB, email string) (bool, error) {
-	var err error
-	err = db.Debug().Model(User{}).Where("email = ?", email).Error
-	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
 		return false, err
-	}
-	if gorm.IsRecordNotFoundError(err) {
-		return false, nil
 	}
 	return true, err
 }
-
