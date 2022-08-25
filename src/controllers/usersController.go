@@ -54,7 +54,6 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// verifica se id nao e null e confert em int
 	// verifica se e o mesmo id que esta no token
 
 	erroUpdate := services.UserService().UpdateUser(uint32(id), dto)

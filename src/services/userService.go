@@ -63,6 +63,7 @@ func (service *userService) DeleteUser(userId uint32) error {
 
 	// verifica se existe usuario com id
 	// deleta todos os registros relacionado ao usuario
+	// deleta o usuario
 
 	return nil
 
