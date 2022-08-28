@@ -10,9 +10,9 @@ import (
 type AssertDto struct {
 	Id           uint32 `json:"id"`
 	Name         string `json:"name"`
-	Amount       int32 `json:"amount"`
-	Price        int64 `json:"price"`
-	AveragePrice int64 `json:"average_price"`
+	Amount       int32  `json:"amount"`
+	Price        int64  `json:"price"`
+	AveragePrice int64  `json:"average_price"`
 }
 
 func (dto *AssertDto) Validate(action string) error {
@@ -21,17 +21,20 @@ func (dto *AssertDto) Validate(action string) error {
 		if dto.Name == "" {
 			return errors.New("Required name")
 		}
-		if dto.Amount != "" {
-			// verificar se nao e negativo
-			return errors.New("Required name")
+		if dto.Amount != 0 {
+			if dto.Amount < 0 {
+				return errors.New("Invalid amount")
+			}
 		}
-		if dto.Price != "" {
-			// verificar se nao e negativo
-			return errors.New("Required name")
+		if dto.Price != 0 {
+			if dto.Price < 0 {
+				return errors.New("Invalid price")
+			}
 		}
-		if dto.AveragePrice != "" {
-			// verificar se nao e negativo
-			return errors.New("Required name")
+		if dto.AveragePrice != 0 {
+			if dto.AveragePrice < 0 {
+				return errors.New("Invalid average_price")
+			}
 		}
 		return nil
 
@@ -45,9 +48,9 @@ func (dto *AssertDto) Validate(action string) error {
 
 func (dto *AssertDto) ToDomain() models.Assert {
 	return models.Assert{
-		Name: dto.Name,
-		Amount: dto.Amount,     
-		Price: dto.Price,     
+		Name:         dto.Name,
+		Amount:       dto.Amount,
+		Price:        dto.Price,
 		AveragePrice: dto.AveragePrice,
 	}
 }

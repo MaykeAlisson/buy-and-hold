@@ -6,6 +6,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 type jwtsctuct struct {
@@ -41,6 +42,32 @@ func (j *jwtsctuct) TokenValid(tokenString string) bool {
 }
 
 func (j *jwtsctuct) ExtractUserID(tokenString string) (uint32, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(j.secretKey), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["user_id"]), 10, 32)
+		if err != nil {
+			return 0, err
+		}
+		return uint32(uid), nil
+	}
+	return 0, nil
+}
+
+func (j *jwtsctuct) GetUserId(ctx *gin.Context) (uint32, error) {
+	const Bearer_schema = "Bearer "
+	header := ctx.GetHeader("Authorization")
+
+	tokenString := header[len(Bearer_schema):]
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])

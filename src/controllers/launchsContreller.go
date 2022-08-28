@@ -3,40 +3,55 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-	"errors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
+	"github.com/maykealisson/buy-and-hold/src/providers"
 	"github.com/maykealisson/buy-and-hold/src/responses"
 	"github.com/maykealisson/buy-and-hold/src/services"
 )
 
 func GetByMonth(c *gin.Context) {
-	var err error
-	month, errorFormt := strconv.ParseInt(c.Param("month"))
+
+	month, errorFormt := strconv.ParseInt(c.Param("month"), 10, 0)
 	if errorFormt != nil || month <= 0 || month > 12 {
 		c.JSON(400, gin.H{"message": "month error format"})
 		return
 	}
 
-    // pega id do usuario do token
-	launchs, err := services.LaunchService().FindByMonth(userId, month)
-	responses.Response(c, http.StatusOk, launchs)
+	userId, errUserId := providers.JwtProvider().GetUserId(c)
+	if errUserId != nil || userId == 0 {
+		responses.BusinessException(c, errUserId)
+		return
+	}
+	launchs, err := services.LaunchService().FindByMonth(userId, int(month))
+	if err != nil {
+		responses.BusinessException(c, err)
+		return
+	}
+	responses.Response(c, http.StatusOK, launchs)
 
 }
 
 func GetByAssert(c *gin.Context) {
 
-	var err error
 	assertId, errorFormt := strconv.ParseUint(c.Param("assertId"), 2, 32)
 	if errorFormt != nil {
 		c.JSON(400, gin.H{"message": "assertId error format"})
 		return
 	}
 
-	// pega id do usuario do token
-	launchs, err := services.LaunchService().FindByAssert(userId, assertId)
-	responses.Response(c, http.StatusOk, launchs)
+	userId, errUserId := providers.JwtProvider().GetUserId(c)
+	if errUserId != nil || userId == 0 {
+		responses.BusinessException(c, errUserId)
+		return
+	}
+	launchs, err := services.LaunchService().FindByAssert(userId, uint32(assertId))
+	if err != nil {
+		responses.BusinessException(c, err)
+		return
+	}
+	responses.Response(c, http.StatusOK, launchs)
 
 }
 
@@ -54,14 +69,18 @@ func CreateLaunch(c *gin.Context) {
 		return
 	}
 
-	err := dto.Validate("")
+	err = dto.Validate("")
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
 	}
 
-	// pega id do usuario do token
-	launch, err := services.LaunchService().Create(userId, assertId, dto)
+	userId, errUserId := providers.JwtProvider().GetUserId(c)
+	if errUserId != nil || userId == 0 {
+		responses.BusinessException(c, errUserId)
+		return
+	}
+	launch, err := services.LaunchService().Create(userId, uint32(assertId), dto)
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
@@ -92,20 +111,24 @@ func UpdateLaunch(c *gin.Context) {
 		return
 	}
 
-	err := dto.Validate("update")
+	err = dto.Validate("update")
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
 	}
 
-	// pega id do usuario do token
-	launch, err := services.LaunchService().Update(userId, assertId, launchId, dto)
+	userId, errUserId := providers.JwtProvider().GetUserId(c)
+	if errUserId != nil || userId == 0 {
+		responses.BusinessException(c, errUserId)
+		return
+	}
+	launch, err := services.LaunchService().Update(userId, uint32(assertId), uint32(launchId), dto)
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
 	}
 
-	responses.Response(c, http.StatusOk, launch)
+	responses.Response(c, http.StatusOK, launch)
 
 }
 
@@ -130,19 +153,23 @@ func DeleteLaunch(c *gin.Context) {
 		return
 	}
 
-	err := dto.Validate("update")
+	err = dto.Validate("update")
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
 	}
 
-	// pega id do usuario do token
-    err := services.LaunchService().Delete(userId, assertId, launchId)
+	userId, errUserId := providers.JwtProvider().GetUserId(c)
+	if errUserId != nil || userId == 0 {
+		responses.BusinessException(c, errUserId)
+		return
+	}
+	err = services.LaunchService().Delete(userId, uint32(assertId), uint32(launchId))
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
 	}
 
-	responses.Response(c, http.StatusOk)
+	responses.Response(c, http.StatusOK, nil)
 
 }
