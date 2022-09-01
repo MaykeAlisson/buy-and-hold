@@ -8,11 +8,11 @@ import (
 )
 
 type AssertDto struct {
-	Id           uint32 `json:"id"`
-	Name         string `json:"name"`
-	Amount       int32  `json:"amount"`
-	Price        int64  `json:"price"`
-	AveragePrice int64  `json:"average_price"`
+	Id           uint32  `json:"id"`
+	Name         string  `json:"name"`
+	Amount       int32   `json:"amount"`
+	Price        float64 `json:"price"`
+	AveragePrice float64 `json:"average_price"`
 }
 
 func (dto *AssertDto) Validate(action string) error {

@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
@@ -15,16 +16,24 @@ func GetAssertBy(c *gin.Context) {
 
 	name := c.Query("name")
 
-	// verifica se name não e null
-	// pega o id do usuario no token
-	// passa para o service o id e o name
 	userId, errUserId := providers.JwtProvider().GetUserId(c)
 	if errUserId != nil || userId == 0 {
 		responses.BusinessException(c, errUserId)
 		return
 	}
 
-	assets, err := services.AssertService().FindByName(userId, name)
+	if name == "" {
+		assets, err := services.AssertService().FindAllByUser(userId)
+		if err != nil {
+			responses.BusinessException(c, err)
+			return
+		}
+
+		responses.Response(c, http.StatusOK, assets)
+		return
+	}
+
+	assets, err := services.AssertService().FindByName(userId, strings.ToUpper(name))
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
@@ -61,9 +70,9 @@ func CreateAssert(c *gin.Context) {
 
 func UpdateAssert(c *gin.Context) {
 
-	assertId, errorFormt := strconv.ParseUint(c.Param("assertId"), 2, 32)
+	assertId, errorFormt := strconv.Atoi(c.Param("id"))
 	if errorFormt != nil {
-		c.JSON(400, gin.H{"message": "id error format"})
+		c.JSON(400, gin.H{"message": errorFormt.Error()})
 		return
 	}
 
@@ -97,9 +106,9 @@ func UpdateAssert(c *gin.Context) {
 
 func DeleteAssert(c *gin.Context) {
 
-	assertId, errorFormt := strconv.ParseUint(c.Param("assertId"), 2, 32)
+	assertId, errorFormt := strconv.Atoi(c.Param("id"))
 	if errorFormt != nil {
-		c.JSON(400, gin.H{"message": "id error format"})
+		c.JSON(400, gin.H{"message": errorFormt.Error()})
 		return
 	}
 
