@@ -21,7 +21,7 @@ func Response(c *gin.Context, status int, data interface{}) {
 func BusinessException(c *gin.Context, err error) {
 	c.JSON(http.StatusBadRequest, handlerError{
 		StatusCode:  http.StatusBadRequest,
-		TimesTamp:   time.Now().String(),
+		TimesTamp:   time.Now().Format(time.RFC3339),
 		Message:     err.Error(),
 		Description: c.FullPath(),
 	})
@@ -30,7 +30,7 @@ func BusinessException(c *gin.Context, err error) {
 func Exception(c *gin.Context, status int, err error) {
 	c.JSON(status, handlerError{
 		StatusCode:  status,
-		TimesTamp:   time.Now().String(),
+		TimesTamp:   time.Now().Format(time.RFC3339),
 		Message:     err.Error(),
 		Description: c.FullPath(),
 	})

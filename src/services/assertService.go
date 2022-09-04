@@ -118,7 +118,7 @@ func (service *accertService) Delete(assertId uint32, userId uint32) error {
 
 	var err error
 	assert := models.Assert{}
-	launch := models.Launch{}
+	launch := models.Launche{}
 	assertReturn, err := assert.FindByID(database.DB, assertId, userId)
 	if err != nil {
 		return err

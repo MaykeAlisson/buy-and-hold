@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
+	"github.com/maykealisson/buy-and-hold/src/providers"
 	"github.com/maykealisson/buy-and-hold/src/responses"
 	"github.com/maykealisson/buy-and-hold/src/services"
 )
@@ -54,7 +56,16 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// verifica se e o mesmo id que esta no token
+	userId, errUserId := providers.JwtProvider().GetUserId(c)
+	if errUserId != nil || userId == 0 {
+		responses.BusinessException(c, errUserId)
+		return
+	}
+
+	if userId != uint32(id) {
+		responses.BusinessException(c, errors.New("Invalid userId"))
+		return
+	}
 
 	erroUpdate := services.UserService().UpdateUser(uint32(id), dto)
 	if erroUpdate != nil {

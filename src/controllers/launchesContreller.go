@@ -35,7 +35,7 @@ func GetByMonth(c *gin.Context) {
 
 func GetByAssert(c *gin.Context) {
 
-	assertId, errorFormt := strconv.ParseUint(c.Param("assertId"), 2, 32)
+	assertId, errorFormt := strconv.ParseUint(c.Param("assert"), 2, 32)
 	if errorFormt != nil {
 		c.JSON(400, gin.H{"message": "assertId error format"})
 		return
@@ -58,12 +58,12 @@ func GetByAssert(c *gin.Context) {
 func CreateLaunch(c *gin.Context) {
 
 	var err error
-	assertId, errorFormt := strconv.ParseUint(c.Param("assertId"), 2, 32)
+	assertId, errorFormt := strconv.Atoi(c.Param("assert"))
 	if errorFormt != nil {
 		c.JSON(400, gin.H{"message": "assertId error format"})
 		return
 	}
-	var dto dtos.LaunchDto
+	var dto dtos.LauncheDto
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(400, err.Error())
 		return
@@ -105,7 +105,7 @@ func UpdateLaunch(c *gin.Context) {
 		return
 	}
 
-	var dto dtos.LaunchDto
+	var dto dtos.LauncheDto
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(400, err.Error())
 		return
@@ -147,7 +147,7 @@ func DeleteLaunch(c *gin.Context) {
 		return
 	}
 
-	var dto dtos.LaunchDto
+	var dto dtos.LauncheDto
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(400, err.Error())
 		return

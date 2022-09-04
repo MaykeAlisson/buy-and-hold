@@ -26,11 +26,11 @@ func HandlerRequest() {
 	r.DELETE("/api/v1/asserts/:id", middlewares.Auth(), controllers.DeleteAssert)
 
 	// Launch
-	r.GET("/api/v1/launchs/:month", middlewares.Auth(), controllers.GetByMonth)
-	r.GET("/api/v1/:assert/launchs", middlewares.Auth(), controllers.GetByAssert)
-	r.POST("/api/v1/:assert/launchs", middlewares.Auth(), controllers.CreateLaunch)
-	r.PUT("/api/v1/:assert/launchs/:id", middlewares.Auth(), controllers.UpdateLaunch)
-	r.DELETE("/api/v1/:assert/launchs/:id", middlewares.Auth(), controllers.DeleteLaunch)
+	r.GET("/api/v1/launches/:month", middlewares.Auth(), controllers.GetByMonth)
+	r.GET("/api/v1/:assert/launches", middlewares.Auth(), controllers.GetByAssert)
+	r.POST("/api/v1/:assert/launches", middlewares.Auth(), controllers.CreateLaunch)
+	r.PUT("/api/v1/:assert/launches/:id", middlewares.Auth(), controllers.UpdateLaunch)
+	r.DELETE("/api/v1/:assert/launches/:id", middlewares.Auth(), controllers.DeleteLaunch)
 
 	r.Run(":3000")
 }

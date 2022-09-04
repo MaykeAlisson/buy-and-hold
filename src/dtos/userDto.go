@@ -17,6 +17,9 @@ type UserDto struct {
 func (u *UserDto) Validate(action string) error {
 	switch strings.ToLower(action) {
 	case "update":
+		if u.Email == "" {
+			return errors.New("Required email")
+		}
 		if u.Email != "" {
 			if err := checkmail.ValidateFormat(u.Email); err != nil {
 				return errors.New("Invalid Email")

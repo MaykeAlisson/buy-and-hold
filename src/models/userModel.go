@@ -72,3 +72,12 @@ func (u *User) ExistsEmail(db *gorm.DB) (bool, error) {
 	}
 	return true, err
 }
+
+func (u *User) Update(db *gorm.DB) error {
+	var err error
+	err = db.Debug().Save(&u).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

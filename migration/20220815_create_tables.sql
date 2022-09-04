@@ -26,7 +26,7 @@ CREATE INDEX asserts_name_idx ON public.asserts (name);
 
 ---
 
-CREATE TABLE public.launchs (
+CREATE TABLE public.launches (
 	id SERIAL,
     operation VARCHAR(4) NOT NULL,
     amount INT NOT NULL,
@@ -35,14 +35,14 @@ CREATE TABLE public.launchs (
     broker VARCHAR(30) NOT NULL,
     assert_id INT NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	CONSTRAINT launchs_pkey PRIMARY KEY (id),
+	CONSTRAINT launches_pkey PRIMARY KEY (id),
     CONSTRAINT fk_assert_id FOREIGN KEY (assert_id) REFERENCES public.asserts(id)
 );
 
-CREATE INDEX launchs_operation_idx ON public.launchs (operation);
+CREATE INDEX launches_operation_idx ON public.launches (operation);
 
-CREATE INDEX launchs_date_operation_idx ON public.launchs (date_operation);
+CREATE INDEX launches_date_operation_idx ON public.launches (date_operation);
 
-CREATE INDEX launchs_broker_idx ON public.launchs (broker);
+CREATE INDEX launches_broker_idx ON public.launches (broker);
 
 ---

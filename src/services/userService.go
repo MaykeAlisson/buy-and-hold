@@ -52,8 +52,23 @@ func (service *userService) CreateUser(dto dtos.UserDto) (dtos.AcessDto, error) 
 
 func (service *userService) UpdateUser(userId uint32, dto dtos.UserDto) error {
 
-	// verifica se existe usuario com id
-	// altera o nome, email e senha
+	var err error
+
+	user := dto.ToDomain()
+
+	userReturn, err := user.FindUserByID(database.DB, userId)
+	if err != nil {
+		return err
+	}
+
+	userReturn.Email = user.Email
+
+	userReturn.Prepare()
+
+	err = userReturn.Update(database.DB)
+	if err != nil {
+		return err
+	}
 
 	return nil
 
