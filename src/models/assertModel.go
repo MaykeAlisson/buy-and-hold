@@ -10,12 +10,13 @@ import (
 )
 
 type Assert struct {
-	Id           uint32
-	Name         string
-	Amount       int32
-	Price        float64
-	AveragePrice float64
-	UserId       uint32
+	Id             uint32
+	Name           string
+	Amount         int32
+	Price          float64
+	AveragePrice   float64
+	InvestedAmount float64
+	UserId         uint32
 }
 
 func (a *Assert) ToDomain(dto dtos.AssertDto) {
@@ -23,6 +24,7 @@ func (a *Assert) ToDomain(dto dtos.AssertDto) {
 	a.Amount = dto.Amount
 	a.Price = dto.Price
 	a.AveragePrice = dto.AveragePrice
+	a.InvestedAmount = dto.InvestedAmount
 }
 
 func (a *Assert) Prepare() {

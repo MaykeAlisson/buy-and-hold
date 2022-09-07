@@ -33,25 +33,21 @@ func (service *launchService) Create(userId uint32, assertId uint32, dto dtos.La
 	launche.AssertId = assertReturn.Id
 	launche.Prepare()
 
-	// e criar um launch para este assert
-
-	// se for uma compra soma a qtd ao total do assert e faz preço medio
 	if launche.Operation == "BUY" {
 		assertReturn.Amount += launche.Amount
+		assertReturn.InvestedAmount += (launche.Price * float64(launche.Amount))
+		assertReturn.AveragePrice = (assertReturn.InvestedAmount / float64(assertReturn.Amount))
 	} else {
 		assertReturn.Amount -= launche.Amount
+		assertReturn.InvestedAmount -= (launche.Price * float64(launche.Amount))
+		assertReturn.AveragePrice = (assertReturn.InvestedAmount / float64(assertReturn.Amount))
 	}
 
 	assertReturn.Price = launche.Price
-	// se for uma venda diminui a qtd do assert
-	// atualiza valor do assert com o valor informado no lancamento
-	// atualizar o assert
 	err = assertReturn.Update(database.DB)
 	if err != nil {
 		return dtos.LauncheDto{}, err
 	}
-
-	// retornar launchDto
 
 	launchSave, err := launche.Save(database.DB)
 	if err != nil {
@@ -81,11 +77,6 @@ func (service *launchService) FindByMonth(userId uint32, month int) ([]dtos.Laun
 		return []dtos.LauncheDto{}, err
 	}
 
-	// pegar o id do usuario
-	// pega o numero mes pegar primeiro dia e ultimo dia do mes e fazer query
-	// busca todos os lancamentos do mes informado para este usuario agrupando por data
-
-	// retornar lista de launchDto
 	return results, nil
 
 }

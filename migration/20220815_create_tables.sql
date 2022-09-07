@@ -16,6 +16,7 @@ CREATE TABLE public.asserts (
     amount INT NULL,
     price NUMERIC(6, 2) NULL,
     average_price NUMERIC(6, 2) NULL,
+    invested_amount NUMERIC(6, 2) NULL,
     user_id INT NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	CONSTRAINT asserts_pkey PRIMARY KEY (id),

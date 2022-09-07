@@ -6,11 +6,12 @@ import (
 )
 
 type AssertDto struct {
-	Id           uint32  `json:"id"`
-	Name         string  `json:"name"`
-	Amount       int32   `json:"amount"`
-	Price        float64 `json:"price"`
-	AveragePrice float64 `json:"average_price"`
+	Id             uint32  `json:"id"`
+	Name           string  `json:"name"`
+	Amount         int32   `json:"amount"`
+	Price          float64 `json:"price"`
+	AveragePrice   float64 `json:"average_price"`
+	InvestedAmount float64 `json:"invested_amount"`
 }
 
 func (dto *AssertDto) Validate(action string) error {
@@ -32,6 +33,11 @@ func (dto *AssertDto) Validate(action string) error {
 		if dto.AveragePrice != 0 {
 			if dto.AveragePrice < 0 {
 				return errors.New("Invalid average_price")
+			}
+		}
+		if dto.InvestedAmount != 0 {
+			if dto.InvestedAmount < 0 {
+				return errors.New("Invalid invested_amount")
 			}
 		}
 		return nil
