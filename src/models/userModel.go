@@ -5,6 +5,7 @@ import (
 	"html"
 	"strings"
 
+	"github.com/maykealisson/buy-and-hold/src/dtos"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -14,6 +15,12 @@ type User struct {
 	Name     string
 	Email    string
 	Password string
+}
+
+func (u *User) ToDomain(dto dtos.UserDto) {
+	u.Name = dto.Name
+	u.Email = dto.Email
+	u.Password = dto.Password
 }
 
 func Hash(password string) ([]byte, error) {

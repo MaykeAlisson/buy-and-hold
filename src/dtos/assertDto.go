@@ -3,8 +3,6 @@ package dtos
 import (
 	"errors"
 	"strings"
-
-	"github.com/maykealisson/buy-and-hold/src/models"
 )
 
 type AssertDto struct {
@@ -43,14 +41,5 @@ func (dto *AssertDto) Validate(action string) error {
 			return errors.New("Required name")
 		}
 		return nil
-	}
-}
-
-func (dto *AssertDto) ToDomain() models.Assert {
-	return models.Assert{
-		Name:         dto.Name,
-		Amount:       dto.Amount,
-		Price:        dto.Price,
-		AveragePrice: dto.AveragePrice,
 	}
 }

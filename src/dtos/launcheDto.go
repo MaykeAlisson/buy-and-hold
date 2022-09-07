@@ -3,9 +3,6 @@ package dtos
 import (
 	"errors"
 	"strings"
-
-	"github.com/maykealisson/buy-and-hold/src/models"
-	"github.com/maykealisson/buy-and-hold/src/utils"
 )
 
 type LauncheDto struct {
@@ -14,13 +11,19 @@ type LauncheDto struct {
 	Price        float64 `json:"price"`
 	DateOperacao string  `json:"date_operation"`
 	Broker       string  `json:"broker"`
+	Assert       string  `json:"assert"`
 }
 
 func (l *LauncheDto) Validate(action string) error {
 	switch strings.ToLower(action) {
 	case "update":
 		if l.Operation == "" {
-			return errors.New("Required operation")
+			return errors.New("Required operation[BUY or SELL]")
+		}
+		if l.Operation != "" {
+			if strings.ToUpper(l.Operation) != "BUY" || strings.ToUpper(l.Operation) != "SELL" {
+				return errors.New("Invalid operation [BUY or SELL]")
+			}
 		}
 		if l.Amount == 0 {
 			return errors.New("Required amount")
@@ -38,7 +41,12 @@ func (l *LauncheDto) Validate(action string) error {
 
 	default:
 		if l.Operation == "" {
-			return errors.New("Required operation")
+			return errors.New("Required operation [BUY or SELL]")
+		}
+		if l.Operation != "" {
+			if strings.ToUpper(l.Operation) != "BUY" && strings.ToUpper(l.Operation) != "SELL" {
+				return errors.New("Invalid operation [BUY or SELL]")
+			}
 		}
 		if l.Amount == 0 {
 			return errors.New("Required amount")
@@ -55,18 +63,4 @@ func (l *LauncheDto) Validate(action string) error {
 		return nil
 	}
 
-}
-
-func (l *LauncheDto) ToDomain() (models.Launche, error) {
-	data, err := utils.DateUtils().ParseDate(l.DateOperacao)
-	if err != nil {
-		return models.Launche{}, err
-	}
-	return models.Launche{
-		Operation:     l.Operation,
-		Amount:        l.Amount,
-		Price:         l.Price,
-		DateOperation: data,
-		Broker:        l.Broker,
-	}, nil
 }

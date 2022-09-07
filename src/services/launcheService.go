@@ -24,23 +24,36 @@ func (service *launchService) Create(userId uint32, assertId uint32, dto dtos.La
 		return dtos.LauncheDto{}, err
 	}
 
-	launch, err := dto.ToDomain()
+	launche := models.Launche{}
+	err = launche.ToDomain(dto)
 	if err != nil {
 		return dtos.LauncheDto{}, err
 	}
 
-	launch.AssertId = assertReturn.Id
+	launche.AssertId = assertReturn.Id
+	launche.Prepare()
 
 	// e criar um launch para este assert
 
 	// se for uma compra soma a qtd ao total do assert e faz preço medio
+	if launche.Operation == "BUY" {
+		assertReturn.Amount += launche.Amount
+	} else {
+		assertReturn.Amount -= launche.Amount
+	}
+
+	assertReturn.Price = launche.Price
 	// se for uma venda diminui a qtd do assert
 	// atualiza valor do assert com o valor informado no lancamento
 	// atualizar o assert
+	err = assertReturn.Update(database.DB)
+	if err != nil {
+		return dtos.LauncheDto{}, err
+	}
 
 	// retornar launchDto
-	launch.Prepare()
-	launchSave, err := launch.Save(database.DB)
+
+	launchSave, err := launche.Save(database.DB)
 	if err != nil {
 		return dtos.LauncheDto{}, err
 	}
@@ -51,6 +64,7 @@ func (service *launchService) Create(userId uint32, assertId uint32, dto dtos.La
 		Price:        launchSave.Price,
 		DateOperacao: launchSave.DateOperation.Format("2006-01-02"),
 		Broker:       launchSave.Broker,
+		Assert:       assertReturn.Name,
 	}, nil
 
 }
@@ -62,22 +76,11 @@ func (service *launchService) FindByMonth(userId uint32, month int) ([]dtos.Laun
 	mes := time.Month(month)
 	year := time.Now().Year()
 	firstDay, lastDay := utils.DateUtils().MonthInterval(year, mes)
-	launches, err := launche.FindByMonth(database.DB, userId, firstDay, lastDay)
+	results, err := launche.FindByMonth(database.DB, userId, firstDay, lastDay)
 	if err != nil {
 		return []dtos.LauncheDto{}, err
 	}
 
-	var results = []dtos.LauncheDto{}
-
-	for _, value := range launches {
-		results = append(results, dtos.LauncheDto{
-			Operation:    value.Operation,
-			Amount:       value.Amount,
-			Price:        value.Price,
-			DateOperacao: value.DateOperation.Format("2006-01-02"),
-			Broker:       value.Broker,
-		})
-	}
 	// pegar o id do usuario
 	// pega o numero mes pegar primeiro dia e ultimo dia do mes e fazer query
 	// busca todos os lancamentos do mes informado para este usuario agrupando por data

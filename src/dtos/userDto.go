@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/badoux/checkmail"
-	"github.com/maykealisson/buy-and-hold/src/models"
 )
 
 type UserDto struct {
@@ -52,13 +51,5 @@ func (u *UserDto) Validate(action string) error {
 			return errors.New("Required password")
 		}
 		return nil
-	}
-}
-
-func (u *UserDto) ToDomain() models.User {
-	return models.User{
-		Name:     u.Name,
-		Email:    u.Email,
-		Password: u.Password,
 	}
 }

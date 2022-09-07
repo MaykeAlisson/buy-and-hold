@@ -17,7 +17,8 @@ func AuthService() *authService {
 }
 
 func (a *authService) Longin(dto dtos.UserDto) (dtos.AcessDto, error) {
-	user := dto.ToDomain()
+	user := models.User{}
+	user.ToDomain(dto)
 	user.Prepare()
 
 	acess, err := a.SingIn(user.Email, user.Password)

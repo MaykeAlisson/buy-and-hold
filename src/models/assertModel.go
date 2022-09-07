@@ -5,6 +5,7 @@ import (
 	"html"
 	"strings"
 
+	"github.com/maykealisson/buy-and-hold/src/dtos"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +16,13 @@ type Assert struct {
 	Price        float64
 	AveragePrice float64
 	UserId       uint32
+}
+
+func (a *Assert) ToDomain(dto dtos.AssertDto) {
+	a.Name = dto.Name
+	a.Amount = dto.Amount
+	a.Price = dto.Price
+	a.AveragePrice = dto.AveragePrice
 }
 
 func (a *Assert) Prepare() {

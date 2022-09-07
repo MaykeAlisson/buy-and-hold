@@ -5,6 +5,7 @@ import (
 
 	"github.com/maykealisson/buy-and-hold/src/database"
 	"github.com/maykealisson/buy-and-hold/src/dtos"
+	"github.com/maykealisson/buy-and-hold/src/models"
 	"github.com/maykealisson/buy-and-hold/src/providers"
 )
 
@@ -18,7 +19,8 @@ func (service *userService) CreateUser(dto dtos.UserDto) (dtos.AcessDto, error) 
 
 	var err error
 
-	user := dto.ToDomain()
+	user := models.User{}
+	user.ToDomain(dto)
 	user.Prepare()
 	user.BeforeSave()
 
@@ -54,7 +56,8 @@ func (service *userService) UpdateUser(userId uint32, dto dtos.UserDto) error {
 
 	var err error
 
-	user := dto.ToDomain()
+	user := models.User{}
+	user.ToDomain(dto)
 
 	userReturn, err := user.FindUserByID(database.DB, userId)
 	if err != nil {

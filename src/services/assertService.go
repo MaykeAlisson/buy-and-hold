@@ -15,7 +15,8 @@ func AssertService() *accertService {
 func (service *accertService) CreateAssert(userId uint32, dto dtos.AssertDto) (dtos.AssertDto, error) {
 
 	var err error
-	assert := dto.ToDomain()
+	assert := models.Assert{}
+	assert.ToDomain(dto)
 	assert.UserId = userId
 	assert.Prepare()
 
@@ -87,7 +88,8 @@ func (service *accertService) FindAllByUser(userId uint32) ([]dtos.AssertDto, er
 func (service *accertService) Update(assertId uint32, userId uint32, dto dtos.AssertDto) (dtos.AssertDto, error) {
 
 	var err error
-	assert := dto.ToDomain()
+	assert := models.Assert{}
+	assert.ToDomain(dto)
 	assertReturn, err := assert.FindByID(database.DB, assertId, userId)
 	if err != nil {
 		return dtos.AssertDto{}, err
