@@ -48,6 +48,29 @@ func (l *Launche) Save(db *gorm.DB) (*Launche, error) {
 	return l, nil
 }
 
+func (l *Launche) FindById(db *gorm.DB, id uint32) (*Launche, error) {
+	var err error
+	err = db.Debug().Where("id = ? ", id).Take(&l).Error
+	if err != nil {
+		return &Launche{}, err
+	}
+
+	return l, nil
+
+}
+
+func (l *Launche) FindByAssertId(db *gorm.DB, assertId uint32) ([]Launche, error) {
+	var err error
+	var results []Launche
+	err = db.Debug().Where("assert_id = ? ", assertId).Order("date_operation desc").Find(&results).Error
+	if err != nil {
+		return results, err
+	}
+
+	return results, nil
+
+}
+
 func (l *Launche) FindByMonth(db *gorm.DB, userId uint32, startDate string, endDate string) ([]dtos.LauncheDto, error) {
 
 	var err error
@@ -63,7 +86,7 @@ func (l *Launche) FindByMonth(db *gorm.DB, userId uint32, startDate string, endD
 	}
 	var results []Result
 	var launches []dtos.LauncheDto
-	err = db.Debug().Table("launches l").Select("l.*, a.name as assert ").Joins("inner join asserts a on l.assert_id = a.id AND a.user_id = ? ", userId).Where("l.date_operation between ? and ?", startDate, endDate).Find(&results).Error
+	err = db.Debug().Table("launches l").Select("l.*, a.name as assert ").Joins("inner join asserts a on l.assert_id = a.id AND a.user_id = ? ", userId).Where("l.date_operation between ? and ?", startDate, endDate).Order("l.date_operation desc").Find(&results).Error
 	if err != nil {
 		return []dtos.LauncheDto{}, err
 	}
@@ -84,6 +107,15 @@ func (l *Launche) FindByMonth(db *gorm.DB, userId uint32, startDate string, endD
 func (l *Launche) DeleteByAccert(db *gorm.DB, assertId uint32) error {
 	var err error
 	err = db.Debug().Where("assert_id = ? ", assertId).Delete(&l).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (l *Launche) DeleteById(db *gorm.DB) error {
+	var err error
+	err = db.Debug().Where("id = ? ", l.Id).Delete(&l).Error
 	if err != nil {
 		return err
 	}

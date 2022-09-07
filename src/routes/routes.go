@@ -29,8 +29,7 @@ func HandlerRequest() {
 	r.GET("/api/v1/launches/:month", middlewares.Auth(), controllers.GetByMonth)
 	r.GET("/api/v1/:assert/launches", middlewares.Auth(), controllers.GetByAssert)
 	r.POST("/api/v1/:assert/launches", middlewares.Auth(), controllers.CreateLaunch)
-	r.PUT("/api/v1/:assert/launches/:id", middlewares.Auth(), controllers.UpdateLaunch)
-	r.DELETE("/api/v1/:assert/launches/:id", middlewares.Auth(), controllers.DeleteLaunch)
+	r.DELETE("/api/v1/launches/:id", middlewares.Auth(), controllers.DeleteLaunch)
 
 	r.Run(":3000")
 }

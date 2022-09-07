@@ -39,8 +39,6 @@ func (service *launchService) Create(userId uint32, assertId uint32, dto dtos.La
 		assertReturn.AveragePrice = (assertReturn.InvestedAmount / float64(assertReturn.Amount))
 	} else {
 		assertReturn.Amount -= launche.Amount
-		assertReturn.InvestedAmount -= (launche.Price * float64(launche.Amount))
-		assertReturn.AveragePrice = (assertReturn.InvestedAmount / float64(assertReturn.Amount))
 	}
 
 	assertReturn.Price = launche.Price
@@ -83,51 +81,69 @@ func (service *launchService) FindByMonth(userId uint32, month int) ([]dtos.Laun
 
 func (service *launchService) FindByAssert(userId uint32, assertId uint32) ([]dtos.LauncheDto, error) {
 
-	// var err error
-	// pegar o id do usuario
-	// pega o assertId
-	// busca todos os lancamentos do assert informado este usuario agrupando por data
+	var err error
+	assert := models.Assert{}
+	assertReturn, err := assert.FindByID(database.DB, assertId, userId)
+	if err != nil {
+		return []dtos.LauncheDto{}, err
+	}
+	launche := models.Launche{}
+	results, err := launche.FindByAssertId(database.DB, assertReturn.Id)
+	if err != nil {
+		return []dtos.LauncheDto{}, err
+	}
 
-	// retornar lista de launchDto
-	return []dtos.LauncheDto{}, nil
+	launches := []dtos.LauncheDto{}
+
+	for _, value := range results {
+		launches = append(launches, dtos.LauncheDto{
+			Operation:    value.Operation,
+			Amount:       value.Amount,
+			Price:        value.Price,
+			DateOperacao: value.DateOperation.Format("2006-01-02"),
+			Broker:       value.Broker,
+			Assert:       assertReturn.Name,
+		})
+	}
+
+	return launches, nil
 
 }
 
-func (service *launchService) Update(userId uint32, assertId uint32, launchId uint32, dto dtos.LauncheDto) (dtos.LauncheDto, error) {
+func (service *launchService) Delete(userId uint32, launchtId uint32) error {
 
-	// var err error
-	// pegar o id do usuario
-	// pegar o id do assert
-	// pega o id do launch
-	// busca o assert
-	// atualiza o launch
+	var err error
+	launche := models.Launche{}
+	assert := models.Assert{}
+	result, err := launche.FindById(database.DB, launchtId)
+	if err != nil {
+		return err
+	}
+	assert, err = assert.FindByID(database.DB, result.AssertId, userId)
+	if err != nil {
+		return err
+	}
 
-	// se for uma compra soma a qtd ao total do assert e faz preço medio
-	// se for uma venda diminui a qtd do assert
-	// atualiza valor do assert com o valor informado no lancamento
-	// atualizar o assert
+	if launche.Operation == "BUY" {
+		assert.Amount += launche.Amount
+		assert.InvestedAmount += (launche.Price * float64(launche.Amount))
+		assert.AveragePrice = (assert.InvestedAmount / float64(assert.Amount))
+	} else {
+		assert.Amount -= launche.Amount
+		assert.InvestedAmount -= (launche.Price * float64(launche.Amount))
+		assert.AveragePrice = (assert.InvestedAmount / float64(assert.Amount))
+	}
 
-	// retornar launchDto
-	return dtos.LauncheDto{}, nil
+	err = assert.Update(database.DB)
+	if err != nil {
+		return err
+	}
 
-}
+	err = launche.DeleteById(database.DB)
+	if err != nil {
+		return err
+	}
 
-func (service *launchService) Delete(userId uint32, assertId uint32, launchtId uint32) error {
-
-	// var err error
-	// pegar o id do usuario
-	// pegar o id do assert
-	// pega o id do launch
-	// busca o assert
-	// buscar o launch
-
-	// se for uma compra diminiir a qtd ao total do assert e faz preço medio
-	// se for uma venda almentar a qtd do assert
-
-	// deletar o launch
-	// atualizar o assert
-
-	// retornar launchDto
 	return nil
 
 }

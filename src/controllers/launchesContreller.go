@@ -60,7 +60,7 @@ func CreateLaunch(c *gin.Context) {
 	var err error
 	assertId, errorFormt := strconv.Atoi(c.Param("assert"))
 	if errorFormt != nil {
-		c.JSON(400, gin.H{"message": "assertId error format"})
+		c.JSON(400, gin.H{"message": "assert error format"})
 		return
 	}
 	var dto dtos.LauncheDto
@@ -90,58 +90,11 @@ func CreateLaunch(c *gin.Context) {
 
 }
 
-func UpdateLaunch(c *gin.Context) {
-
-	var err error
-	assertId, errorFormt := strconv.ParseUint(c.Param("assertId"), 2, 32)
-	if errorFormt != nil {
-		c.JSON(400, gin.H{"message": "assertId error format"})
-		return
-	}
-
-	launchId, err := strconv.ParseUint(c.Param("launchId"), 2, 32)
-	if err != nil {
-		c.JSON(400, gin.H{"message": "launchId error format"})
-		return
-	}
-
-	var dto dtos.LauncheDto
-	if err := c.ShouldBindJSON(&dto); err != nil {
-		c.JSON(400, err.Error())
-		return
-	}
-
-	err = dto.Validate("update")
-	if err != nil {
-		responses.BusinessException(c, err)
-		return
-	}
-
-	userId, errUserId := providers.JwtProvider().GetUserId(c)
-	if errUserId != nil || userId == 0 {
-		responses.BusinessException(c, errUserId)
-		return
-	}
-	launch, err := services.LaunchService().Update(userId, uint32(assertId), uint32(launchId), dto)
-	if err != nil {
-		responses.BusinessException(c, err)
-		return
-	}
-
-	responses.Response(c, http.StatusOK, launch)
-
-}
-
 func DeleteLaunch(c *gin.Context) {
 
 	var err error
-	assertId, errorFormt := strconv.ParseUint(c.Param("assertId"), 2, 32)
-	if errorFormt != nil {
-		c.JSON(400, gin.H{"message": "assertId error format"})
-		return
-	}
 
-	launchId, err := strconv.ParseUint(c.Param("launchId"), 2, 32)
+	launchId, err := strconv.ParseUint(c.Param("id"), 2, 32)
 	if err != nil {
 		c.JSON(400, gin.H{"message": "launchId error format"})
 		return
@@ -164,7 +117,7 @@ func DeleteLaunch(c *gin.Context) {
 		responses.BusinessException(c, errUserId)
 		return
 	}
-	err = services.LaunchService().Delete(userId, uint32(assertId), uint32(launchId))
+	err = services.LaunchService().Delete(userId, uint32(launchId))
 	if err != nil {
 		responses.BusinessException(c, err)
 		return
