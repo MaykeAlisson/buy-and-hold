@@ -6,6 +6,7 @@ import (
 )
 
 type LauncheDto struct {
+	Id           uint32  `json:"id"`
 	Operation    string  `json:"operation"`
 	Amount       int32   `json:"amount"`
 	Price        float64 `json:"price"`

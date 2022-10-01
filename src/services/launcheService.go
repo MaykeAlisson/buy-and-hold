@@ -53,6 +53,7 @@ func (service *launchService) Create(userId uint32, assertId uint32, dto dtos.La
 	}
 
 	return dtos.LauncheDto{
+		Id:           launchSave.Id,
 		Operation:    launchSave.Operation,
 		Amount:       launchSave.Amount,
 		Price:        launchSave.Price,
@@ -97,6 +98,7 @@ func (service *launchService) FindByAssert(userId uint32, assertId uint32) ([]dt
 
 	for _, value := range results {
 		launches = append(launches, dtos.LauncheDto{
+			Id:           value.Id,
 			Operation:    value.Operation,
 			Amount:       value.Amount,
 			Price:        value.Price,

@@ -10,7 +10,7 @@ func Auth() gin.HandlerFunc {
 		const Bearer_schema = "Bearer "
 		header := ctx.GetHeader("Authorization")
 		if header == "" {
-			ctx.JSON(401, gin.H{"message": "nao entra"})
+			ctx.JSON(401, gin.H{"message": "required token"})
 			ctx.Abort()
 			return
 		}
@@ -18,7 +18,7 @@ func Auth() gin.HandlerFunc {
 		token := header[len(Bearer_schema):]
 
 		if !providers.JwtProvider().TokenValid(token) {
-			ctx.JSON(401, gin.H{"message": "nao entra"})
+			ctx.JSON(401, gin.H{"message": "invalid token"})
 			ctx.Abort()
 			return
 		}

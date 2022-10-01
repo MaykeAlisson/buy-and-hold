@@ -67,10 +67,10 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	return u, err
 }
 
-func (u *User) ExistsEmail(db *gorm.DB) (bool, error) {
+func (u *User) ExistsEmail(db *gorm.DB, email string) (bool, error) {
 	var err error
 	result := map[string]interface{}{}
-	err = db.Debug().Model(User{}).Where("email = ?", u.Email).Take(&result).Error
+	err = db.Debug().Model(User{}).Where("email = ?", email).Take(&result).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil

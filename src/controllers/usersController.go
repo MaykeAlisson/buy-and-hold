@@ -38,7 +38,7 @@ func CreateUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 
-	id, errorFormt := strconv.ParseUint(c.Param("id"), 2, 32)
+	id, errorFormt := strconv.Atoi(c.Param("id"))
 	if errorFormt != nil {
 		c.JSON(400, gin.H{"message": "id error format"})
 		return
@@ -72,20 +72,17 @@ func UpdateUser(c *gin.Context) {
 		responses.BusinessException(c, erroUpdate)
 		return
 	}
-	c.JSON(http.StatusOK, nil)
+	responses.Response(c, http.StatusOK, nil)
 
 }
 
 func DeleteUser(c *gin.Context) {
 
-	id, errorFormt := strconv.ParseUint(c.Param("id"), 2, 32)
+	id, errorFormt := strconv.Atoi(c.Param("id"))
 	if errorFormt != nil {
 		c.JSON(400, gin.H{"message": "id error format"})
 		return
 	}
-
-	// verifica se id nao e null e confert em int
-	// verifica se e o mesmo id que esta no token
 
 	err := services.UserService().DeleteUser(uint32(id))
 	if err != nil {
@@ -93,6 +90,6 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, nil)
+	responses.Response(c, http.StatusOK, nil)
 
 }

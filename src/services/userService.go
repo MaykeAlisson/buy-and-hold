@@ -24,7 +24,7 @@ func (service *userService) CreateUser(dto dtos.UserDto) (dtos.AcessDto, error) 
 	user.Prepare()
 	user.BeforeSave()
 
-	exists, err := user.ExistsEmail(database.DB)
+	exists, err := user.ExistsEmail(database.DB, user.Email)
 	if err != nil {
 		return dtos.AcessDto{}, err
 	}
@@ -57,16 +57,24 @@ func (service *userService) UpdateUser(userId uint32, dto dtos.UserDto) error {
 	var err error
 
 	user := models.User{}
-	user.ToDomain(dto)
+	userUpdate := models.User{}
+	userUpdate.ToDomain(dto)
+	userUpdate.Prepare()
 
 	userReturn, err := user.FindUserByID(database.DB, userId)
 	if err != nil {
 		return err
 	}
 
-	userReturn.Email = user.Email
+	exists, err := user.ExistsEmail(database.DB, userUpdate.Email)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return errors.New("email already registered!")
+	}
 
-	userReturn.Prepare()
+	userReturn.Email = userUpdate.Email
 
 	err = userReturn.Update(database.DB)
 	if err != nil {

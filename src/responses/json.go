@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -15,7 +16,14 @@ type handlerError struct {
 }
 
 func Response(c *gin.Context, status int, data interface{}) {
-	c.JSON(status, data)
+	if data != nil {
+		fmt.Println("passou")
+		fmt.Println(data)
+		c.JSON(status, data)
+	} else {
+		c.JSON(status, gin.H{})
+	}
+
 }
 
 func BusinessException(c *gin.Context, err error) {

@@ -29,13 +29,14 @@ func GetByMonth(c *gin.Context) {
 		responses.BusinessException(c, err)
 		return
 	}
+
 	responses.Response(c, http.StatusOK, launchs)
 
 }
 
 func GetByAssert(c *gin.Context) {
 
-	assertId, errorFormt := strconv.ParseUint(c.Param("assert"), 2, 32)
+	assertId, errorFormt := strconv.ParseInt(c.Param("assert"), 10, 0)
 	if errorFormt != nil {
 		c.JSON(400, gin.H{"message": "assertId error format"})
 		return
@@ -94,21 +95,9 @@ func DeleteLaunch(c *gin.Context) {
 
 	var err error
 
-	launchId, err := strconv.ParseUint(c.Param("id"), 2, 32)
+	launchId, err := strconv.ParseInt(c.Param("id"), 10, 0)
 	if err != nil {
 		c.JSON(400, gin.H{"message": "launchId error format"})
-		return
-	}
-
-	var dto dtos.LauncheDto
-	if err := c.ShouldBindJSON(&dto); err != nil {
-		c.JSON(400, err.Error())
-		return
-	}
-
-	err = dto.Validate("update")
-	if err != nil {
-		responses.BusinessException(c, err)
 		return
 	}
 

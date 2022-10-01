@@ -93,6 +93,7 @@ func (l *Launche) FindByMonth(db *gorm.DB, userId uint32, startDate string, endD
 
 	for _, value := range results {
 		launches = append(launches, dtos.LauncheDto{
+			Id:           value.Id,
 			Operation:    value.Operation,
 			Amount:       value.Amount,
 			Price:        value.Price,

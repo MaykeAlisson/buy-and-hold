@@ -48,11 +48,12 @@ func (service *accertService) FindByName(userId uint32, name string) ([]dtos.Ass
 
 	for _, value := range asserts {
 		results = append(results, dtos.AssertDto{
-			Id:           value.Id,
-			Name:         value.Name,
-			Amount:       value.Amount,
-			Price:        value.Price,
-			AveragePrice: value.AveragePrice,
+			Id:             value.Id,
+			Name:           value.Name,
+			Amount:         value.Amount,
+			Price:          value.Price,
+			AveragePrice:   value.AveragePrice,
+			InvestedAmount: value.InvestedAmount,
 		})
 	}
 
@@ -73,11 +74,12 @@ func (service *accertService) FindAllByUser(userId uint32) ([]dtos.AssertDto, er
 
 	for _, value := range asserts {
 		results = append(results, dtos.AssertDto{
-			Id:           value.Id,
-			Name:         value.Name,
-			Amount:       value.Amount,
-			Price:        value.Price,
-			AveragePrice: value.AveragePrice,
+			Id:             value.Id,
+			Name:           value.Name,
+			Amount:         value.Amount,
+			Price:          value.Price,
+			AveragePrice:   value.AveragePrice,
+			InvestedAmount: value.InvestedAmount,
 		})
 	}
 
@@ -107,11 +109,12 @@ func (service *accertService) Update(assertId uint32, userId uint32, dto dtos.As
 	}
 
 	return dtos.AssertDto{
-		Id:           assertReturn.Id,
-		Name:         assertReturn.Name,
-		Price:        assertReturn.Price,
-		Amount:       assertReturn.Amount,
-		AveragePrice: assertReturn.AveragePrice,
+		Id:             assertReturn.Id,
+		Name:           assertReturn.Name,
+		Price:          assertReturn.Price,
+		Amount:         assertReturn.Amount,
+		AveragePrice:   assertReturn.AveragePrice,
+		InvestedAmount: assertReturn.InvestedAmount,
 	}, nil
 
 }
